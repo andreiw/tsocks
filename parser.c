@@ -207,7 +207,7 @@ static int handle_path(struct parsedfile *config, int lineno, int nowords, char 
 	} else {
 		/* Open up a new serverent, put it on the list   */
 		/* then set the current context                  */
-		if (((int) (newserver = (struct serverent *) malloc(sizeof(struct serverent)))) == -1) 
+		if ((newserver = (struct serverent *) malloc(sizeof(struct serverent))) == NULL)
 			exit(-1);	
 	
 		/* Initialize the structure */
@@ -523,7 +523,8 @@ int make_netent(char *value, struct netent **ent) {
       exit(1);
    }
 
-   show_msg(MSGDEBUG, "New network entry for %s going to 0x%08x\n", ip, *ent);
+   show_msg(MSGDEBUG, "New network entry for %s/%s going to 0x%08x\n",
+            ip, subnet, *ent);
 
    if (!startport)
       (*ent)->startport = 0;
@@ -579,6 +580,23 @@ int make_netent(char *value, struct netent **ent) {
 
 int is_local(struct parsedfile *config, struct in_addr *testip) {
         struct netent *ent;
+	struct serverent *sent;
+
+        for (sent = (config->paths); sent != NULL; sent = sent -> next) {
+          ent = sent->reachnets;
+          while (ent != NULL) {
+            /*
+             * Eh can probably skip the port checks here. If it's
+             * in a path it's obviously not local.
+             */
+            if ((testip->s_addr & ent->localnet.s_addr) ==
+                (ent->localip.s_addr &  ent->localnet.s_addr)) {
+              return 1;
+            }
+
+            ent = ent->next;
+          }
+	}
 
 	for (ent = (config->localnets); ent != NULL; ent = ent -> next) {
 		if ((testip->s_addr & ent->localnet.s_addr) ==

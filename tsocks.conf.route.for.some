@@ -1,0 +1,27 @@
+#
+# This is the configuration for libtsocks (transparent socks)
+# Lines beginning with # and blank lines are ignored
+#
+# This sample configuration shows a configuration when you only need
+# to proxy for a few known hosts, while treating the rest as local.
+#
+# This is especially useful is the SOCKS5 proxy is you SSHing into
+# some other, possibly public/remote host. This way it allows you to access
+# a private LAN elsewhere, overlaying it on top of whatever private
+# LANs/routing you may have, to access a host you need without
+# disturbing anything else.
+#
+
+# Otherwise we use the server
+
+local = 0.0.0.0/0.0.0.0
+
+path {
+     reaches = 10.0.50.27/255.255.255.255
+     server = localhost
+     server_type = 5
+     server_port = 12345
+}
+server = localhost
+server_type = 5
+server_port = 12345
