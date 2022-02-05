@@ -108,7 +108,7 @@ void test_host(struct parsedfile *config, char *host) {
 		return;
 	} else {
 		printf("Finding path for %s...\n", inet_ntoa(hostaddr));
-      if (!(is_local(config, &(hostaddr)))) {
+                if (!(is_local(config, &(hostaddr), port))) {
          printf("Path is local\n");
       } else {
          pick_server(config, &path, &hostaddr, portno);
@@ -181,7 +181,7 @@ void show_server(struct parsedfile *config, struct serverent *server, int def) {
 
 	/* Check the server is on a local net */
 	if ((server->address != NULL) && (res.s_addr != -1) && 
-	    (is_local(config, &res))) 
+	    (is_local(config, &res, server->port))) 
 		fprintf(stderr, "Error: Server is not on a network "
 				"specified as local\n");
 

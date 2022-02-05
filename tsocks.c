@@ -290,7 +290,7 @@ int connect(CONNECT_SIGNATURE) {
                       "%s\n", __fd, inet_ntoa(connaddr->sin_addr));
 
    /* If the address is local call realconnect */
-   if (!(is_local(config, &(connaddr->sin_addr)))) {
+   if (!(is_local(config, &(connaddr->sin_addr),  ntohs(connaddr->sin_port)))) {
       show_msg(MSGDEBUG, "Connection for socket %d is local\n", __fd);
       return(realconnect(__fd, __addr, __len));
    }
@@ -325,7 +325,7 @@ int connect(CONNECT_SIGNATURE) {
       bzero(&(server_address.sin_zero), 8);
 
       /* Complain if this server isn't on a localnet */
-      if (is_local(config, &server_address.sin_addr)) {
+      if (is_local(config, &server_address.sin_addr, server_address.sin_port)) {
          show_msg(MSGERR, "SOCKS server %s (%s) is not on a local subnet!\n", 
                   path->address, inet_ntoa(server_address.sin_addr));
       } else 

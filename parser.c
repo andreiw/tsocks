@@ -578,19 +578,17 @@ int make_netent(char *value, struct netent **ent) {
 	return(0);
 }
 
-int is_local(struct parsedfile *config, struct in_addr *testip) {
+   int is_local(struct parsedfile *config, struct in_addr *testip, unsigned int port) {
         struct netent *ent;
 	struct serverent *sent;
 
         for (sent = (config->paths); sent != NULL; sent = sent -> next) {
           ent = sent->reachnets;
           while (ent != NULL) {
-            /*
-             * Eh can probably skip the port checks here. If it's
-             * in a path it's obviously not local.
-             */
             if ((testip->s_addr & ent->localnet.s_addr) ==
-                (ent->localip.s_addr &  ent->localnet.s_addr)) {
+                (ent->localip.s_addr &  ent->localnet.s_addr) &&
+                (!port || !ent->startport || 
+                 ((ent->startport <= port) && (ent->endport >= port)))) {
               return 1;
             }
 
