@@ -200,9 +200,10 @@ int connect(CONNECT_SIGNATURE) {
   struct sockaddr_in *connaddr;
   struct sockaddr_in peer_address;
   struct sockaddr_in server_address;
-  int gotvalidserver = 0, rc, namelen = sizeof(peer_address);
+  int gotvalidserver = 0, rc;
+  socklen_t namelen = sizeof(peer_address);
   int sock_type = -1;
-  int sock_type_len = sizeof(sock_type);
+  socklen_t sock_type_len = sizeof(sock_type);
   unsigned int res = -1;
   struct serverent *path;
   struct connreq *newconn;
@@ -357,7 +358,6 @@ int connect(CONNECT_SIGNATURE) {
 
 int select(SELECT_SIGNATURE) {
   int nevents = 0;
-  int rc = 0;
   int setevents = 0;
   int monitoring = 0;
   struct connreq *conn, *nextconn;
@@ -484,7 +484,7 @@ int select(SELECT_SIGNATURE) {
       if (setevents & EXCEPT) {
         conn->state = FAILED;
       } else {
-        rc = handle_request(conn);
+        handle_request(conn);
       }
       /* If the connection hasn't failed or completed there is nothing
        * to report to the client */
@@ -545,7 +545,7 @@ int select(SELECT_SIGNATURE) {
 
 int poll(POLL_SIGNATURE) {
   int nevents = 0;
-  int rc = 0, i;
+  int i;
   int setevents = 0;
   int monitoring = 0;
   struct connreq *conn, *nextconn;
@@ -655,7 +655,7 @@ int poll(POLL_SIGNATURE) {
       if (setevents & (POLLERR | POLLNVAL | POLLHUP)) {
         conn->state = FAILED;
       } else {
-        rc = handle_request(conn);
+         handle_request(conn);
       }
       /* If the connection hasn't failed or completed there is nothing
        * to report to the client */
