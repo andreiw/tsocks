@@ -108,7 +108,7 @@ void test_host(struct parsedfile *config, char *host) {
     return;
   } else {
     printf("Finding path for %s...\n", inet_ntoa(hostaddr));
-    if (!(is_local(config, &(hostaddr), port))) {
+    if (!(is_local(config, &(hostaddr), portno))) {
       printf("Path is local\n");
     } else {
       pick_server(config, &path, &hostaddr, portno);
