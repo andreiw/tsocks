@@ -12,8 +12,6 @@
 # disturbing anything else.
 #
 
-# Otherwise we use the server
-
 local = 0.0.0.0/0.0.0.0
 
 path {
@@ -22,6 +20,3 @@ path {
      server_type = 5
      server_port = 12345
 }
-server = localhost
-server_type = 5
-server_port = 12345
